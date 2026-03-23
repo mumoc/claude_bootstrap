@@ -41,10 +41,14 @@ Pulls the latest changes and re-runs the bootstrap.
 1. Create `skills/<skill-name>/SKILL.md` with the skill frontmatter and instructions.
 2. Run `./scripts/bootstrap.sh` to install it.
 
-## Required env vars
+## MCP authentication
 
-Set these in your shell profile before running Claude Code:
+After bootstrapping, some servers need a one-time login per machine. See [`docs/mcp-setup.md`](docs/mcp-setup.md) for details.
+
+**GitHub** — set in your shell profile:
 
 ```bash
 export GITHUB_PERSONAL_ACCESS_TOKEN=...
 ```
+
+**Atlassian** — OAuth browser login on first use, no env var needed.
