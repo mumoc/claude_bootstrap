@@ -1,6 +1,3 @@
 .DS_Store
-!AGENTS.md
-!.claude/
-!.claude/**
-!templates/CLAUDE.md
-!templates/CLAUDE.local.md.example
+CLAUDE.local.md
+.claude/settings.local.json

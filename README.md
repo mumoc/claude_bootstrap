@@ -1,38 +1,50 @@
-# Jira Codex Kit
+# claude-bootstrap
 
-Portable Claude assets for Jira planning and repository guidance.
+Portable Claude Code configuration. Clone this repo on a new machine and run one command to get your global rules, permissions, MCP servers, and skills in place.
 
-## What is included
-
-- `.claude/skills/jira-ticket-planning/`
-- `templates/CLAUDE.md`
-- `templates/CLAUDE.local.md.example`
-- `docs/extracted-practices.md`
-- `AGENTS.md`
-- `scripts/install-claude-skill.sh`
-
-## Claude Skill Install
-
-For Claude Code, project skills must live under `.claude/skills/` and user-level skills under `~/.claude/skills/`.
-
-This repository now includes a Claude-native project skill at `.claude/skills/jira-ticket-planning/`.
-
-To install the same skill at the user level:
+## Bootstrap a new machine
 
 ```bash
-./scripts/install-claude-skill.sh
+git clone <this-repo> ~/Projects/ai
+cd ~/Projects/ai
+./scripts/bootstrap.sh
 ```
 
-By default this installs `jira-ticket-planning` into `${CLAUDE_HOME:-$HOME/.claude}/skills/jira-ticket-planning`.
+This will:
 
-## Claude Template Usage
+- Symlink `~/.claude/CLAUDE.md` → `global/CLAUDE.md`
+- Symlink `~/.claude/settings.json` → `global/settings.json`
+- Copy all skills from `skills/` into `~/.claude/skills/`
 
-1. Copy `templates/CLAUDE.md` into the target repository root as `CLAUDE.md`.
-2. Optionally copy `templates/CLAUDE.local.md.example` to `CLAUDE.local.md`.
-3. Add `CLAUDE.local.md` to the target repository's `.gitignore`.
-4. Replace placeholders with project-specific commands, architecture notes, and guardrails.
+Existing files are backed up before being replaced (`.bak` suffix).
 
-## Notes
+## Stay up to date
 
-- `docs/extracted-practices.md` separates reusable patterns from company-specific details.
-- Keep secrets, private URLs, tenant names, and company-only process details out of the shared template.
+```bash
+./scripts/update.sh
+```
+
+Pulls the latest changes and re-runs the bootstrap.
+
+## What's tracked
+
+| Path | Purpose |
+|---|---|
+| `global/CLAUDE.md` | Global rules, conventions, and workflows applied across all projects |
+| `global/settings.json` | Allowed commands, MCP server config (secrets via env vars) |
+| `skills/jira-ticket-planning/` | Jira initiative-to-ticket planning skill |
+| `templates/CLAUDE.md` | Starter template for per-project `CLAUDE.md` files |
+| `docs/extracted-practices.md` | Distilled patterns worth reusing across projects |
+
+## Adding a new skill
+
+1. Create `skills/<skill-name>/SKILL.md` with the skill frontmatter and instructions.
+2. Run `./scripts/bootstrap.sh` to install it.
+
+## Required env vars
+
+Set these in your shell profile before running Claude Code:
+
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN=...
+```
