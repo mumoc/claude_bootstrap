@@ -125,7 +125,7 @@ Invoke it when:
 - classifying or sequencing tickets
 - creating approved tickets in Jira
 
-Do not apply Jira title prefixes, field structure, or classification logic without the skill active.
+Do not apply Jira field structure or classification logic without the skill active.
 
 ---
 

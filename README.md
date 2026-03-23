@@ -5,8 +5,8 @@ Portable Claude Code configuration. Clone this repo on a new machine and run one
 ## Bootstrap a new machine
 
 ```bash
-git clone <this-repo> ~/Projects/ai
-cd ~/Projects/ai
+git clone <this-repo> ~/Projects/claude_bootstrap
+cd ~/Projects/claude_bootstrap
 ./scripts/bootstrap.sh
 ```
 
@@ -34,7 +34,6 @@ Pulls the latest changes and re-runs the bootstrap.
 | `global/settings.json` | Allowed commands, MCP server config (secrets via env vars) |
 | `skills/jira-ticket-planning/` | Jira initiative-to-ticket planning skill |
 | `templates/CLAUDE.md` | Starter template for per-project `CLAUDE.md` files |
-| `docs/extracted-practices.md` | Distilled patterns worth reusing across projects |
 
 ## Adding a new skill
 

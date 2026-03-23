@@ -40,9 +40,6 @@ Use this template when preparing Jira tickets for an initiative.
 
 ## Working Rules
 
-- Draft backend tickets with `BE | ` title prefix.
-- Draft web tickets with `FE | ` title prefix.
-- Draft mobile tickets with `Mobile | ` title prefix.
 - Keep `Summary`, `Background`, `Acceptance Criteria`, `Dependencies`, and `Technical Notes` in that order.
 - Classify tickets before deciding sprint placement.
 - Put enabling backend tickets ahead of dependent client tickets unless there is a clear reason not to.

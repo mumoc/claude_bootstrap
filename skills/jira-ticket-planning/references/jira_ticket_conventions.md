@@ -1,11 +1,5 @@
 # Jira Ticket Conventions
 
-## Title Prefixes
-
-- `BE | ` for backend / API tickets
-- `FE | ` for web / frontend tickets
-- `Mobile | ` for mobile tickets
-
 ## Ticket Structure
 
 Use this section order when drafting tickets:

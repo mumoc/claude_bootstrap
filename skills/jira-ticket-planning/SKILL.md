@@ -14,7 +14,7 @@ Use this skill for initiative-to-ticket workflows:
 
 Keep the main workflow here. Load references only when needed:
 
-- read [references/jira_ticket_conventions.md](references/jira_ticket_conventions.md) for title prefixes, ticket section order, classification attributes, and sequencing heuristics
+- read [references/jira_ticket_conventions.md](references/jira_ticket_conventions.md) for ticket section order, classification attributes, and sequencing heuristics
 - read [references/jira_initiative_template.md](references/jira_initiative_template.md) when you need a structured initiative intake or a reusable ticket template
 
 ## Workflow
@@ -37,9 +37,9 @@ Assign the planning attributes defined in `references/jira_ticket_conventions.md
 
 Use classification to decide sequencing and sprint placement. Foundation or API enablers usually come before dependent client tickets.
 
-### 3. Apply title conventions and ticket structure
+### 3. Apply ticket structure
 
-Use the title prefixes and section order from `references/jira_ticket_conventions.md`.
+Use the section order from `references/jira_ticket_conventions.md`.
 
 Write for planning clarity:
 
