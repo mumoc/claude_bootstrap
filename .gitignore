@@ -1,0 +1,6 @@
+.DS_Store
+!AGENTS.md
+!.claude/
+!.claude/**
+!templates/CLAUDE.md
+!templates/CLAUDE.local.md.example
