@@ -26,6 +26,47 @@ This file provides cross-project behavioral rules. It intentionally contains no 
 
 ---
 
+## Design Principles
+
+These principles govern every implementation decision. They are applied together, not
+in isolation. When they appear to conflict, the tests are the tiebreaker — the design
+that makes tests simpler, clearer, and more targeted is the right one.
+
+**YAGNI — You Aren't Gonna Need It**
+Build only what the current ticket requires. Do not add parameters, abstractions,
+configuration options, or infrastructure for future tickets that do not exist yet.
+If it is not in the acceptance criteria or surfaced by the critique, it does not
+belong in this change.
+- Violation: adding a `type` column "in case we need it later."
+- Violation: making a service configurable when one behavior is all that is needed.
+
+**KISS — Keep It Simple**
+Prefer the simplest solution that correctly solves the problem. Complexity is a cost,
+not a feature. Adapt an existing object before creating a new one. A plain conditional
+beats a strategy pattern until the tests make the pattern necessary.
+- Violation: creating a new service when an existing one can be extended with a small change.
+- Violation: introducing a layer of indirection that tests do not require.
+
+**SOLID — applied with restraint**
+Single Responsibility and Dependency Inversion are the principles that surface most
+often. The others apply when the tests make them necessary.
+- **S:** each object does one thing. If you need "and" to describe it, it needs to be split.
+  Split at the refactor stage when tests make the coupling visible — not speculatively.
+- **D:** inject dependencies rather than hardcoding class references. Class methods for
+  stateless work; instance methods when dependencies are injected.
+- O, L, I: apply when a concrete design problem makes them relevant. Do not apply them
+  to future-proof code that does not have that problem yet.
+
+**DRY — Don't Repeat Yourself, with limits**
+Every piece of knowledge should have one authoritative representation. In production
+code this is a strong rule. In tests it is a limited rule — visible setup beats
+extracted helpers when the helper hides what is actually being tested.
+- Production: a business rule stated in two places is a maintenance hazard. Consolidate.
+- Tests: `shared_let` for reused values. `shared_examples` only for genuinely repeated
+  behavior. Never extract setup that obscures the scenario being tested.
+
+---
+
 ## Code Conventions
 
 ### Universal
