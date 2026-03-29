@@ -74,7 +74,7 @@ These apply regardless of stack.
 - Type hints on all public functions and methods — inputs and return value.
 - Dataclasses or Pydantic for structured data; plain dicts only for truly ad hoc payloads.
 - Raise exceptions for error paths; don't return `None` or error codes from domain functions.
-- Use context managers for all resource management (files, connections, locks).
+- Use context managers for all resource management (files, connections, logs).
 - List comprehensions over `map`/`filter` when the logic fits in one line.
 - Prefer explicit imports over wildcard imports.
 - Tests: use `pytest` fixtures for setup, not `setUp`/`tearDown`. Prefer `monkeypatch` and
@@ -115,17 +115,105 @@ Never create a README for a single class. Never repeat per-method detail already
 
 ---
 
-## Ticket Planning (Jira)
+## Skills
 
-Use the `jira-ticket-planning` skill for all initiative-to-ticket work. The skill is the source
-of truth for workflow, structure, and sprint placement rules.
+### gates
 
-Invoke it when:
-- turning a plan into Jira tickets
-- classifying or sequencing tickets
-- creating approved tickets in Jira
+**Used by the orchestrator only.** Individual agents do not load this skill.
+Defines gate types, conditions, routing logic, and stage contracts for agentic pipelines.
 
-Do not apply Jira field structure or classification logic without the skill active.
+Skill: `~/.claude/skills/gates/SKILL.md`
+
+Load when:
+- Running any multi-stage agentic pipeline.
+- The orchestrator needs to evaluate stage output before advancing.
+- A stage transition requires a routing decision (proceed, loop-back, human, fail).
+
+Do not load in individual agent contexts. Gates are orchestrator responsibility.
+
+### orchestrator
+
+**Pipeline coordinator.** Owns shared state, dispatches agents, evaluates gates, handles
+parallel execution, and routes between stages. Load when running a full ticket pipeline.
+
+Skill: `~/.claude/skills/orchestrator/SKILL.md`
+
+Load when:
+- Running any full ticket pipeline (extract → analyze → challenge → plan → validate → deliver).
+- Coordinating parallel agents (Challenge + Risk Assessment).
+- Managing pipeline recovery, loop-backs, or human pause/resume.
+
+Requires `gates` skill and `setup` skill (context must be current) before first dispatch.
+Do not load in individual agent contexts — orchestrator responsibility only.
+
+### setup
+
+**Run before any agentic pipeline.** Scans the repository, harvests existing documentation,
+conducts a short business logic interview, and writes grounding documents to `context/`.
+All agents read from `context/` — setup is what makes them accurate.
+
+Skill: `~/.claude/skills/setup/SKILL.md`
+
+Run when:
+- Starting an agentic workflow on a repo for the first time.
+- The repo has changed structurally (new services, major new namespaces).
+- `context/.setup_manifest.json` reports a structural hash drift.
+
+Skip when `context/` exists and the manifest hash matches the current repo structure.
+The skill checks this automatically.
+
+### engineering-workflow
+
+**Hard gate.** Use for any task that changes code or tests — implementation, bug fix, refactor,
+or test writing.
+
+Skill: `~/.claude/skills/engineering-workflow/SKILL.md`
+
+Required sequence:
+1. Read the ticket or task description directly — do not rely on a summary.
+2. Ask clarifying questions in one batch until scope is safe to implement.
+3. If `context/` grounding documents exist, read the relevant ones before inspecting code.
+4. Inspect existing code and test patterns.
+5. Propose an action path and wait for explicit approval — this is a hard gate.
+6. Implement with TDD: red → commit → green → commit → refactor → commit.
+7. Run the `verify` skill. Work is never done until it passes clean — this is a hard gate.
+8. Wait for explicit delivery approval before pushing or opening a PR — this is a hard gate.
+9. After review comments: evaluate, apply worthwhile changes, verify, commit, push.
+
+### agents
+
+Dispatched exclusively by the orchestrator. Each agent receives a scoped payload,
+does one job, and returns a structured output. Do not load agent skills directly —
+the orchestrator manages dispatch.
+
+| Agent | Skill | Role |
+|---|---|---|
+| Extractor | `~/.claude/skills/agents/extractor/SKILL.md` | Structures raw ticket into typed object |
+| Analyzer | `~/.claude/skills/agents/analyzer/SKILL.md` | Interprets intent and maps to domain |
+| Challenger | `~/.claude/skills/agents/challenger/SKILL.md` | Business/product adversarial review |
+| Risk Assessment | `~/.claude/skills/agents/risk-assessment/SKILL.md` | Technical risk review (parallel with Challenger) |
+| Planner | `~/.claude/skills/agents/planner/SKILL.md` | Produces ordered implementation plan |
+| Validator | `~/.claude/skills/agents/validator/SKILL.md` | Verifies plan against ticket before delivery |
+
+### jira-ticket-planning
+
+Use for all initiative-to-ticket work. Source of truth for ticket structure, classification,
+and sprint placement.
+
+Skill: `~/.claude/skills/jira-ticket-planning/SKILL.md`
+
+Invoke when turning a plan into Jira tickets, classifying or sequencing tickets, or creating
+approved tickets in Jira. Do not apply Jira field structure or classification logic without
+this skill active.
+
+### verify
+
+**Hard gate.** Run after every TDD cycle and before any "done" declaration.
+
+Skill: `~/.claude/skills/verify/SKILL.md`
+
+Reads `/verify` from the project `CLAUDE.md`. Falls back to stack auto-detection.
+Work is never done until verify passes clean.
 
 ---
 
